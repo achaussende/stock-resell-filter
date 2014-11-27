@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_picking_out_search" model="ir.ui.view">
+            <field name="model">stock.picking.out</field>
+            <field name="inherit_id" ref="stock.view_picking_out_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='done']" position="after">
+                    <filter icon="terp-dialog-close" name="resell_only" string="Reselled Product Only"  domain="[('make_to_stock_only','=',True)]" help="Delivery orders that the products are all in 'make to stock' procurement"/>
+                    <filter icon="terp-dialog-close" name="partial_resell" string="Partial Reselled Product" domain="[('move_lines.product_id.procure_method','=','make_to_stock')]" help="Delivery orders that have at least one product that is in 'make to stock' procurement"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
