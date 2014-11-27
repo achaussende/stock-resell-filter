@@ -17,20 +17,18 @@ class StockPicking(orm.Model):
     def _has_only_make_to_stock(self, cr, uid, ids, name, args, context=None):
         result = {}
         for picking in self.browse(cr, uid, ids, context=context):
-            if picking.make_to_stock_only:
-                result[picking.id] = picking.make_to_stock_only
-            else:
-                result[picking.id] = True
+            result[picking.id] = True
             for move in picking.move_lines:
-                result[picking.id] = result[picking.id] and \
-                    (move.product_id.procure_method == 'make_to_stock')
+                if move.product_id.procure_method != 'make_to_stock':
+                    result[picking.id] = False
+                    break
         return result
 
     def _get_picking_from_stock_move(self, cr, uid, ids, context=None):
         move_obj = self.pool.get('stock.move')
         picking_ids = []
         for move in move_obj.browse(cr, uid, ids, context=context):
-            if move.picking_id:
+            if move.picking_id.id not in picking_ids:
                 picking_ids.append(move.picking_id.id)
         return picking_ids
 
